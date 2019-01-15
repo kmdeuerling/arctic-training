@@ -6,6 +6,6 @@ This repository is used as:
 * An introduction to git  
 * Using git with RStudio
 
-##Credits
+## Credits
 
 Thanks!

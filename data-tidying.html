@@ -389,6 +389,62 @@ head(catch_joined)</code></pre>
 ## 4    SSE 1889 Chinook               0     0 Southern Southeast Alaska
 ## 5    SSE 1890 Chinook               0     0 Southern Southeast Alaska
 ## 6    SSE 1891 Chinook               0     0 Southern Southeast Alaska</code></pre>
+<div id="spread" class="section level2">
+<h2>Spread</h2>
+<p>Make a wide data frame using <code>spread</code></p>
+<pre class="r"><code>catch_wide &lt;- catch_cleaned %&gt;% 
+  filter(Year &gt; 1990) %&gt;% 
+  select(-Catch_thousands) %&gt;% 
+  spread(key = Year, value = Catch)
+
+head(catch_wide)</code></pre>
+<pre><code>##   Region Species 1991   1992 1993   1994 1995 1996 1997
+## 1    ALU Chinook    0      0    0      0    0    0    0
+## 2    ALU    Chum    0   2000 1000   1000    0    0    0
+## 3    ALU    Coho    0      0    0      0    0    0    0
+## 4    ALU    Pink    0 320000    0 860000    0    0    0
+## 5    ALU Sockeye 1000   3000    0      0    0    0    0
+## 6    BER Chinook    0      0    0      0    0    0    0</code></pre>
+</div>
+</div>
+<div id="separate-unite" class="section level1">
+<h1>Separate &amp; Unite</h1>
+<pre class="r"><code>dates_df &lt;- data.frame(date = c(&quot;5/24/1930&quot;,
+                                &quot;5/25/1930&quot;,
+                                &quot;5/26/1930&quot;,
+                                &quot;5/27/1930&quot;,
+                                &quot;5/28/1930&quot;),
+                       stringsAsFactors = FALSE)
+
+dates_df</code></pre>
+<pre><code>##        date
+## 1 5/24/1930
+## 2 5/25/1930
+## 3 5/26/1930
+## 4 5/27/1930
+## 5 5/28/1930</code></pre>
+<p>Separate the single date column into a month, day, and year column</p>
+<pre class="r"><code>dates_sep &lt;- dates_df %&gt;% 
+  separate(col=date, into=c(&quot;month&quot;, &quot;day&quot;, &quot;year&quot;), sep=&quot;/&quot;)
+
+head(dates_sep)</code></pre>
+<pre><code>##   month day year
+## 1     5  24 1930
+## 2     5  25 1930
+## 3     5  26 1930
+## 4     5  27 1930
+## 5     5  28 1930</code></pre>
+<p>Now unite into a date the way we want it to be… YYYY-MM-DD. Still need to figure out how to get it into a 2-digit month.</p>
+<pre class="r"><code>dates_unite &lt;- dates_sep %&gt;% 
+  unite(date_iso, year, month, day, sep=&quot;-&quot;)
+
+head(dates_unite)</code></pre>
+<pre><code>##    date_iso
+## 1 1930-5-24
+## 2 1930-5-25
+## 3 1930-5-26
+## 4 1930-5-27
+## 5 1930-5-28</code></pre>
 </div>
 
 

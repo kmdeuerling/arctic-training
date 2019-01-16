@@ -46,19 +46,24 @@ head(catch_long)
 
 ```
 
-THe code in English: "Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch"
+THe code in English: "Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch.  Then (after figuring out what went wrong) we changed  the bad value to an integer (and forced it to be an integer as opposed to a character), and multiplied catch_thousands by 1000 to get the total number of the catch"
 
 
 
 ```{r}
 catch_cleaned <- catch_long %>% 
-  rename(Catch_thousands = Catch) #%>% 
-  #mutate(Catch = Catch_thousands*1000) 
+  rename(Catch_thousands = Catch) %>% 
+  mutate(Catch_thousands = ifelse(Catch_thousands == "I", 1, Catch_thousands)) %>% 
+  mutate(Catch_thousands = as.integer(Catch_thousands))  %>% 
+  mutate(Catch = Catch_thousands*1000)
+  
 
 head(catch_cleaned)
 ```
-... but the mutate line wouldn't run because there is a letter/character in the catch_thousands column.  So we try to force it to be an integer (below), which also throws an error because R doesn't know how to deal with the character.  So, we force the character to be an na, and find it using the which function (line 65).  And then we can identify what the problem is and fix it.
-```{r}
+
+```{r, eval=F, echo=F}
+#This is the testing that we did to figure out what had gone wrong
+#... the mutate lines wouldn't run because there is a letter/character in the catch_thousands column.  So we try to force it to be an integer (below), which also throws an error because R doesn't know how to deal with the character.  So, we force the character to be an na, and find it using the which function (line 65).  And then we can identify what the problem is and fix it.
 test_catch <- as.integer(catch_cleaned$Catch_thousands)
 
 i <- which(is.na(test_catch == TRUE)) #returns the rows with na
@@ -69,4 +74,84 @@ catch_cleaned[i,]
 
 # Split-Apply-Combine
 
+Calculate total catch by region
+
+```{r}
+catch_total <- catch_cleaned %>% 
+  group_by(Region) %>% 
+  summarize(catch_region = sum(Catch), 
+            n_obs=n())
+
+catch_total
+
+```
+
+And you can also group by multiple variables, such as region & year
+
+```{r}
+catch_total_RegYear <- catch_cleaned %>% 
+  group_by(Region, Year) %>% 
+  summarize(catch_region = sum(Catch))
+
+catch_total_RegYear
+```
+Matt's challenge:  Mean catch by species each year
+
+```{r}
+catch_species_Year <- catch_cleaned %>% 
+  group_by(Species, Year) %>% 
+  summarize(species_mean = mean(Catch),
+            n_obs=n())
+
+catch_species_Year
+```
+
+Filter for Chinook salmon:
+```{r}
+catch_chinook_chum <- catch_cleaned %>%
+  filter(Species == "Chinook" | Species =="Chum")
+
+head(catch_chinook_chum)
+```
+
+Can also stack multiple filters with multiple operators.  `Arrange` allows you to change the order of the output.  In this case the `-Year` arranges the rows in descending order (must add - because ascending order is the default)
+
+```{r}
+catch_chinook_SSE_after1990 <- catch_cleaned %>%
+  filter(Species == "Chinook" & Region =="SSE" & Year > 1990) %>% 
+  arrange(-Year)
+
+head(catch_chinook_SSE_after1990)
+```
+
+
 # Joins
+
+Import data:
+```{r}
+region_defs <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.303.1", method = "libcurl"),
+                        stringsAsFactors = FALSE)
+
+head(region_defs)
+
+```
+
+Clean up the data set to only have the columns we are interested in (region code and name of management area)
+```{r}
+region_clean <- region_defs %>% 
+  select(code, mgmtArea)
+
+head(region_clean)
+```
+
+Now we join!
+
+Left joins are almost always used.  `left_join(left_data, right_data, by = "L-key" = "R-key")`
+
+```{r}
+catch_joined <- left_join(catch_cleaned, region_clean, 
+                          by = c("Region" = "code"))
+
+head(catch_joined)
+```
+

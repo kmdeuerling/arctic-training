@@ -46,7 +46,25 @@ head(catch_long)
 
 ```
 
-THe code in English: "Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch""
+THe code in English: "Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch"
+
+
+
+```{r}
+catch_cleaned <- catch_long %>% 
+  rename(Catch_thousands = Catch) #%>% 
+  #mutate(Catch = Catch_thousands*1000) 
+
+head(catch_cleaned)
+```
+... but the mutate line wouldn't run because there is a letter/character in the catch_thousands column.  So we try to force it to be an integer (below), which also throws an error because R doesn't know how to deal with the character.  So, we force the character to be an na, and find it using the which function (line 65).  And then we can identify what the problem is and fix it.
+```{r}
+test_catch <- as.integer(catch_cleaned$Catch_thousands)
+
+i <- which(is.na(test_catch == TRUE)) #returns the rows with na
+
+catch_cleaned[i,]
+```
 
 
 # Split-Apply-Combine

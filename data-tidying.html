@@ -226,7 +226,27 @@ head(catch_long)</code></pre>
 ## 4    SSE 1889 Chinook     0
 ## 5    SSE 1890 Chinook     0
 ## 6    SSE 1891 Chinook     0</code></pre>
-<p>THe code in English: “Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch”&quot;</p>
+<p>THe code in English: “Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch”</p>
+<pre class="r"><code>catch_cleaned &lt;- catch_long %&gt;% 
+  rename(Catch_thousands = Catch) #%&gt;% 
+  #mutate(Catch = Catch_thousands*1000) 
+
+head(catch_cleaned)</code></pre>
+<pre><code>##   Region Year Species Catch_thousands
+## 1    SSE 1886 Chinook               0
+## 2    SSE 1887 Chinook               0
+## 3    SSE 1888 Chinook               0
+## 4    SSE 1889 Chinook               0
+## 5    SSE 1890 Chinook               0
+## 6    SSE 1891 Chinook               0</code></pre>
+<p>… but the mutate line wouldn’t run because there is a letter/character in the catch_thousands column. So we try to force it to be an integer (below), which also throws an error because R doesn’t know how to deal with the character. So, we force the character to be an na, and find it using the which function (line 65). And then we can identify what the problem is and fix it.</p>
+<pre class="r"><code>test_catch &lt;- as.integer(catch_cleaned$Catch_thousands)</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<pre class="r"><code>i &lt;- which(is.na(test_catch == TRUE)) #returns the rows with na
+
+catch_cleaned[i,]</code></pre>
+<pre><code>##     Region Year Species Catch_thousands
+## 401    GSE 1955 Chinook               I</code></pre>
 </div>
 </div>
 <div id="split-apply-combine" class="section level1">

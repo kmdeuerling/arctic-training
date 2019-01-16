@@ -1,0 +1,34 @@
+---
+title: "Data Tidying"
+author: "KMD"
+date: "January 16, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning = FALSE, message = FALSE}
+library(dplyr)
+library(tidyr)
+```
+If there are errors after library calls, it's because there are functions with the same name in multiple packages.  The last package that was called will overlay previous ones or base R.  For example, when dplyr is loaded in, filter and lag are overlaid from the stats package.  Loading stats package after dplyr would mask the dplyr versions with the stats version.
+
+To call a function from a specific package (in particular ones that are masked), the syntax is: `package_name::function_name(...)`
+
+# Data Cleaning
+
+Read in a data file
+
+```{r}
+catch <- read.csv(file = "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1", 
+                  stringsAsFactors = FALSE)
+
+head(catch)
+```
+
+
+# Split-Apply-Combine
+
+# Joins

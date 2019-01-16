@@ -210,6 +210,24 @@ head(catch)</code></pre>
 ## 4    SSE 1889       0     182   11   92    0 285             
 ## 5    SSE 1890       0     251   42    0    0 292             
 ## 6    SSE 1891       0     274   24    0    0 298</code></pre>
+<p>Ctrl+Shift+m gives %&gt;% (pipe operator)</p>
+<div id="learning-how-to-gather" class="section level2">
+<h2>Learning how to gather</h2>
+<p>Move from wide to long format data:</p>
+<pre class="r"><code>catch_long &lt;- catch %&gt;% 
+  select(-All, -notesRegCode) %&gt;% 
+  gather(key = &quot;Species&quot;, value = &quot;Catch&quot;, -Year, -Region)
+
+head(catch_long)</code></pre>
+<pre><code>##   Region Year Species Catch
+## 1    SSE 1886 Chinook     0
+## 2    SSE 1887 Chinook     0
+## 3    SSE 1888 Chinook     0
+## 4    SSE 1889 Chinook     0
+## 5    SSE 1890 Chinook     0
+## 6    SSE 1891 Chinook     0</code></pre>
+<p>THe code in English: “Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch”&quot;</p>
+</div>
 </div>
 <div id="split-apply-combine" class="section level1">
 <h1>Split-Apply-Combine</h1>

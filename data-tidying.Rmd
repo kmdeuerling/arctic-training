@@ -28,6 +28,26 @@ catch <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.
 head(catch)
 ```
 
+Ctrl+Shift+m gives %>% (pipe operator)
+
+
+##Learning how to gather
+
+Move from wide to long format data:
+
+```{r}
+
+catch_long <- catch %>% 
+  select(-All, -notesRegCode) %>% 
+  gather(key = "Species", value = "Catch", -Year, -Region)
+
+head(catch_long)
+
+
+```
+
+THe code in English: "Catch_long gets the data frame catch, which then is selected to remove the columns All and notesRegCode, then is gathered so that we have the information for species and catch""
+
 
 # Split-Apply-Combine
 

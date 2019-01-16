@@ -22,8 +22,8 @@ To call a function from a specific package (in particular ones that are masked),
 Read in a data file
 
 ```{r}
-catch <- read.csv(file = "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1", 
-                  stringsAsFactors = FALSE)
+catch <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1", method = "libcurl"),
+                    stringsAsFactors = FALSE)
 
 head(catch)
 ```

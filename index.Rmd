@@ -102,8 +102,33 @@ If you want to keep up with the same sort of plots, then you can set a theme as 
 
 ## Facet Wrap
 
+Plot timeseries of escapement by species for all regions
 
+```{r, fig.height=8, fig.width=12}
+ggplot(annual_esc, aes(x = year, y = escapement, color = Species))+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~SASAP.Region, scales = "free_y")+
+  theme_bw()
+```
 
+Can also save your plots:
+
+```{r}
+ggsave("region_escapement.png")
+```
+
+The default of `ggsave()` is the last printed figure, and not necessarily the one you want to print.  To get around, can save the figure as a variable, then plot the variable:
+
+```{r}
+fig <- ggplot(annual_esc, aes(x = year, y = escapement, color = Species))+
+  geom_line()+
+  geom_point()+
+  facet_wrap(~SASAP.Region, scales = "free_y")+
+  theme_bw()
+
+ggsave("region_escapement2.png", plot = fig)
+```
 
 Use the ggplot 2 [cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)!
 

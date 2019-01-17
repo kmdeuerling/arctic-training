@@ -9,22 +9,50 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+```{r, warning=F, message=F, echo=F}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(DT)
+```
+# Data Import
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Read in data from archive.  Alaska Department of Fish and Game, Division of Commercial Fisheries. 2017. Daily salmon escapement counts from the OceanAK database, Alaska, 1921-2017. Knowledge Network for Biocomplexity. https://doi.org/10.5063/F1S46Q6M.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r, echo=F}
+esc <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/urn%3Auuid%3Af119a05b-bbe7-4aea-93c6-85434dcb1c5e", method = "libcurl"),
+                    stringsAsFactors = FALSE)
 
-```{r cars}
-summary(cars)
+head(esc)
 ```
 
-## Including Plots
+# Data Tidying
 
-You can also embed plots, for example:
+Calculate annual, regional total escapement.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+* `separate` the date into year-month-day
+* `group_by` and `summarize` to calculate the sum over unique region-year-species combinations
+* `filter` for salmon species only
+
+```{r, echo=F}
+annual_esc <- esc %>% 
+  separate(sampleDate, into = c("year", "month", "day"), sep = "-") %>% 
+  mutate(year = as.numeric(year)) %>% 
+  group_by(SASAP.Region, Species, year) %>% 
+  summarise(escapement=sum(DailyCount)) %>% 
+  filter(Species %in% c("Chinook", "Sockeye", "Pink", "Chum", "Coho"))
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Creating a dynamic table using the DT package 
+
+```{r}
+datatable(annual_esc)
+```
+
+
+# Static Plots
+
+
+
+# Nifty Maps!

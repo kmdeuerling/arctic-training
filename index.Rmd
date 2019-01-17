@@ -53,6 +53,61 @@ datatable(annual_esc)
 
 # Static Plots
 
+Pretty plots in ggplot2
 
+`aes()` is the aesthetic call and maps everything in your plot to a column in your dataset
+
+*To change things like color, do it in your plot-type call (`geom_col()` in this case)
+
+```{r}
+ggplot(data = annual_esc, mapping = aes(x = Species, y = escapement)) +
+  geom_col(fill = "blue")
+```
+
+But if you want to make colors different based on your data, you CAN put the `fill` in the `aes()` call:
+
+```{r}
+ggplot(data = annual_esc, mapping = aes(x = Species, y = escapement, fill = Species)) +
+  geom_col()
+```
+
+
+
+```{r}
+ggplot(data = annual_esc, mapping = aes(x = Species, y = escapement, fill = SASAP.Region)) +
+  geom_col()
+```
+
+You can also make other neat plots using filters (filtered to JUST the Kodiak data).
+
+
+```{r}
+ggplot(data = filter(annual_esc, SASAP.Region == "Kodiak"), aes(x = year, y = escapement, color=Species)) +
+  geom_line()
+```
+We switched to `color` from `fill` because the former is generally used for lines and the latter for shapes.
+
+We can also add multiple geometries to a single plot:
+```{r}
+ggplot(data = filter(annual_esc, SASAP.Region == "Kodiak"), aes(x = year, y = escapement, color=Species)) +
+  geom_line()+
+  geom_point()+
+  ylab("Escapement (number of fish)")+
+  xlab("Year")+
+  ggtitle("Kodiak Salmon Escapement")+
+  theme_bw()
+```
+
+If you want to keep up with the same sort of plots, then you can set a theme as an object and then can call back to it rather than type it all out again.
+
+## Facet Wrap
+
+
+
+
+Use the ggplot 2 [cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)!
 
 # Nifty Maps!
+
+
+

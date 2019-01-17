@@ -14,7 +14,9 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(DT)
+library(leaflet)
 ```
+
 # Data Import
 
 Read in data from archive.  Alaska Department of Fish and Game, Division of Commercial Fisheries. 2017. Daily salmon escapement counts from the OceanAK database, Alaska, 1921-2017. Knowledge Network for Biocomplexity. https://doi.org/10.5063/F1S46Q6M.
@@ -130,9 +132,38 @@ fig <- ggplot(annual_esc, aes(x = year, y = escapement, color = Species))+
 ggsave("region_escapement2.png", plot = fig)
 ```
 
+And then you can also print to a csv file if you have derived data you want to save.
+
+```{r}
+write.csv(annual_esc, "derived_data/annual_esc.csv")
+```
+
+
 Use the ggplot 2 [cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)!
 
-# Nifty Maps!
+
+# Nifty Interactive Maps!
+
+Make a map using leaflet
+
+* find unique locations with lat/long values
+
+```{r}
+locations <- esc %>% 
+  distinct(Location, Latitude, Longitude) %>% 
+  drop_na() #must be willing to lose ALL information on ANY row with an NA
+
+datatable(locations)
+```
 
 
+Create the interactive map!
 
+```{r}
+leaflet(locations) %>% 
+  addTiles() %>%  #adds open source background tiles to map
+  addMarkers(~ Longitude, ~ Latitude, popup = ~ Location) #adds markers and popups with location names
+```
+
+
+So neat!

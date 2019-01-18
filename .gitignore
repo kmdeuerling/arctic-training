@@ -38,3 +38,10 @@ rsconnect/
 
 #CSV files
 *.csv
+
+#netCDF files
+*.nc
+
+#word files
+*.docx
+*.doc

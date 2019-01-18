@@ -1,0 +1,72 @@
+---
+title: "ROpenSci Demo"
+author: "KMD"
+date: "January 18, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# ROpenSci Demonstration
+
+## Using NOAA data
+
+Requires the use of the "rnoaa" and "ncdf4" packages.
+
+```{r}
+library(rnoaa)
+library(ncdf4)
+library(ggplot2)
+```
+
+Read in buoy data:
+
+```{r}
+bd <- buoy(dataset = "cwind", buoyid = 46080, year = 2018, datatype = "c")
+```
+
+```{r}
+wind_speed <- data.frame(time = strptime(bd$data$time, format = "%Y-%m-%dT%TZ"), speed = bd$data$wind_spd, stringsAsFactors = F)
+```
+*`as.POSIXct()` tells R that this is a date or time, and allows you to do math on it.  Even though it didn't work this time because there is a T and Z.
+
+*So instead we used `strptime()` to reformat the data/time format.
+
+```{r}
+ggplot(wind_speed, aes(x = time, y = speed))+
+  geom_point(color = "blue")+
+  theme_bw()+
+  ylab("Wind Speed m/s")+
+  xlab("Date")
+```
+
+# Now for Mapr
+
+Load libraries
+
+```{r}
+library(mapr)
+library(spocc)
+```
+
+###Plot locations of GBIF species occurrence data for grizzly, polar, and SPIRIT bears
+
+Load in the data!
+
+```{r}
+spp <- c("Ursus arctos", "Ursus maritimus", "Ursus americanus kermodei")
+
+bears <- occ(query = spp,
+             from = "gbif",
+             has_coords = T,
+             limit = 500)
+```
+
+Plot them up!
+
+```{r}
+map_leaflet(bears, color=c("black", "red", "green"), size = 1, alpha = 1)
+```
+

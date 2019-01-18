@@ -117,7 +117,7 @@ ggplot(annual_esc, aes(x = year, y = escapement, color = Species))+
 Can also save your plots:
 
 ```{r}
-ggsave("region_escapement.png")
+ggsave("derived_data/region_escapement.png")
 ```
 
 The default of `ggsave()` is the last printed figure, and not necessarily the one you want to print.  To get around, can save the figure as a variable, then plot the variable:
@@ -129,7 +129,7 @@ fig <- ggplot(annual_esc, aes(x = year, y = escapement, color = Species))+
   facet_wrap(~SASAP.Region, scales = "free_y")+
   theme_bw()
 
-ggsave("region_escapement2.png", plot = fig)
+ggsave("derived_data/region_escapement2.png", plot = fig)
 ```
 
 And then you can also print to a csv file if you have derived data you want to save.

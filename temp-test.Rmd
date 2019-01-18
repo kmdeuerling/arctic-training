@@ -1,0 +1,32 @@
+---
+title: "Temperature Test"
+author: "KMD"
+date: "January 17, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Functions
+
+Source utility functions and test them.
+
+The `source()` call allows you to call an R script -- the one with the functions in them.
+
+* You will want to clear your environment before you do this
+
+```{r}
+source("fahr_to_celsius.R")
+```
+
+
+
+```{r}
+airtemps <- c(1:10)
+fahr_to_celsius(airtemps)
+```
+
+# Packages
+
